@@ -3,7 +3,7 @@
 using namespace std;
 std::vector< long long > primeNumbers( 300000, 0);
 void fillPrimeNumbers(){
-	int sizeA = 32 100000;
+	int sizeA = 3200000;
 	bool checkArray[3200000];
 	for(int index = 0; index < sizeA; index++){
 		checkArray[index] = true;
