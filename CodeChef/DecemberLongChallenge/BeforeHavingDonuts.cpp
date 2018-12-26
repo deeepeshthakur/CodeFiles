@@ -1,88 +1,194 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-double vol = 0.0;
-const double pi = 3.1415926535897932384626;
+// long long Volume = 0;
+long long countts = 0;
+// double vol = (1700.0*1700.0*1700.0);
+double vol = 0.0, epsi = 0.001;
 
 struct torus{
 	double x, y, z, r, R;
 };
 
-bool compareBV(torus& a, torus& b){
-	return a.r*a.r*a.R > b.r*b.r*b.R;
-}
+struct node{
+	double x1, x2, y1, y2, z1, z2;
+	node(double xa, double xb, double ya, double yb, double za, double zb){
+		x1 = xa;
+		x2 = xb;
+		y1 = ya;
+		y2 = yb;
+		z1 = za;
+		z2 = zb;
+	}
+};
 
-bool cPnt(int i, double x, double y, double z, std::vector < torus >& tori){
-	if(std::abs(tori[i].z - z) <= tori[i].r){
-		double d = std::sqrt((x - tori[i].x)*(x - tori[i].x) + (y - tori[i].y)*(y - tori[i].y)),
-			   rr = std::sqrt(tori[i].r*tori[i].r - (tori[i].z - z)*(tori[i].z - z));
-		if(tori[i].R - rr <= d && d <= tori[i].R + rr){
+std::queue < node > bfsq{};
+
+bool aFunction(int i, double x1, double x2, double y1, double y2, double z1, double z2, std::vector < torus >& tori){
+	if(std::max(std::abs(tori[i].z - z1), std::abs(tori[i].z - z2)) > (tori[i].r - epsi)){
+		return false;
+	}
+	else{
+		double rM = tori[i].R + std::sqrt(tori[i].r*tori[i].r - std::max((z1 - tori[i].z)*(z1 - tori[i].z), (z2 - tori[i].z)*(z2 - tori[i].z)));
+		double mx = std::max((tori[i].x - x1)*(tori[i].x - x1), (tori[i].x - x2)*(tori[i].x - x2)),
+			   my = std::max((tori[i].y - y1)*(tori[i].y - y1), (tori[i].y - y2)*(tori[i].y - y2));
+		if((rM + epsi) >= std::sqrt(mx + my)){
 			return true;
 		}
 	}
 	return false;
 }
 
-double probCommon(int i, double theta1, double theta2, int k, std::vector < torus >& tori){
-	// srand(time(0));
-	// double pi = 3.141592654;
-	double alpha, beta, mag, prob = 0.0, inv = 0.0, x, y, z;
-	int c = 0, acc = 10000000;
-	bool ft = true;
-	for(int j = 1; j <= k; j++){
-		alpha = theta1 + (theta2 - theta1)*(((rand()%acc)*1.0)/(acc*1.0));
-		beta = pi*(((rand()%acc)*1.0)/(acc*1.0)) - pi;
-		mag = tori[i].r*(((rand()%acc)*1.0)/(acc*1.0));
-		x = tori[i].x + tori[i].R*std::cos(alpha) + mag*std::cos(beta)*std::cos(alpha);
-		y = tori[i].y + tori[i].R*std::sin(alpha) + mag*std::cos(beta)*std::sin(alpha);
-		z = tori[i].z + mag*std::sin(beta);
+bool cFunction(int i, double x1, double x2, double y1, double y2, double z1, double z2, std::vector < torus >& tori){
+	if(std::min(std::abs(tori[i].z - z1), std::abs(tori[i].z - z2)) >= (tori[i].r - epsi) && 
+	   ((tori[i].z - z1)*(tori[i].z - z2) > 0.0)){
+		return true;
+	}
+	else{
+		double rM = 0.0;
+		if((tori[i].z - z1)*(tori[i].z - z2) < 0.0){
+			rM = tori[i].R + tori[i].r;
+		}
+		else
+			rM = tori[i].R + std::sqrt(tori[i].r*tori[i].r - std::min((z1 - tori[i].z)*(z1 - tori[i].z), (z2 - tori[i].z)*(z2 - tori[i].z)));
+		
+		if((tori[i].x - x1)*(tori[i].x - x2) > 0.0 || (tori[i].y - y1)*(tori[i].y - y2) > 0.0){
+			double mx = std::min((tori[i].x - x1)*(tori[i].x - x1), (tori[i].x - x2)*(tori[i].x - x2)),
+				   my = std::min((tori[i].y - y1)*(tori[i].y - y1), (tori[i].y- y2)*(tori[i].y- y2));
 
-		ft = true;
-		for(int t = 0; t < i && ft; t++){
-			if(cPnt(t, x, y, z, tori)){
-				c++;
-				ft = false;
+			if((tori[i].x - x1)*(tori[i].x - x2) < 0.0 && (rM - epsi) <= std::sqrt(my)){
+				return true;
+			}
+
+			if((tori[i].y - y1)*(tori[i].y - y2) < 0.0 && (rM - epsi) <= std::sqrt(mx)){
+				return true;
+			}
+
+			if((rM - epsi) <= std::sqrt(mx + my)){
+				return true;
 			}
 		}
+	}
+	return false;
+}
 
-		if(j == 100 && c == 0){
-			return 1.0;
+bool eFuntion(int i, double x1, double x2, double y1, double y2, double z1, double z2, std::vector < torus >& tori){
+	if(std::max(std::abs(tori[i].z - z1), std::abs(tori[i].z - z2)) > (tori[i].r - epsi)){
+		return false;
+	}
+	else{
+		double rM = tori[i].R - std::sqrt(tori[i].r*tori[i].r - std::max((z1 - tori[i].z)*(z1 - tori[i].z), (z2 - tori[i].z)*(z2 - tori[i].z)));
+		if((tori[i].x - x1)*(tori[i].x - x2) > 0.0 || (tori[i].y - y1)*(tori[i].y - y2) > 0.0){
+			double mx = std::min((tori[i].x - x1)*(tori[i].x - x1), (tori[i].x - x2)*(tori[i].x - x2)),
+				   my = std::min((tori[i].y - y1)*(tori[i].y - y1), (tori[i].y- y2)*(tori[i].y- y2));
+
+			if((tori[i].x - x1)*(tori[i].x - x2) <= 0.0 && (rM - epsi) <= std::sqrt(my)){
+				return true;
+			}
+
+			if((tori[i].y - y1)*(tori[i].y - y2) <= 0.0 && (rM - epsi) <= std::sqrt(mx)){
+				return true;
+			}
+
+			if((rM - epsi)<= std::sqrt(mx + my)){
+				return true;
+			}
 		}
 	}
-
-	return ((k - c)*1.0)/(k*1.0);
+	return false;
 }
+
+bool dFunction(int i, double x1, double x2, double y1, double y2, double z1, double z2, std::vector < torus >& tori){
+	if(std::min(std::abs(tori[i].z - z1), std::abs(tori[i].z - z2)) > (tori[i].r - epsi) && ((tori[i].z - z1)*(tori[i].z - z2) > 0.0)){
+		return true;
+	}
+	else{
+		double rM = 0.0;
+		if((tori[i].z - z1)*(tori[i].z - z2) < 0.0){
+			rM = tori[i].R - tori[i].r;
+		}
+		else
+			rM = tori[i].R - std::sqrt(tori[i].r*tori[i].r - std::min((z1 - tori[i].z)*(z1 - tori[i].z), (z2 - tori[i].z)*(z2 - tori[i].z)));
+		
+		double mx = std::max((tori[i].x - x1)*(tori[i].x - x1), (tori[i].x - x2)*(tori[i].x - x2)),
+			   my = std::max((tori[i].y - y1)*(tori[i].y - y1), (tori[i].y- y2)*(tori[i].y - y2));
+		if((rM + epsi) >= std::sqrt(mx + my)){
+			return true;
+		}
+	}
+	return false;
+}
+
+void rec(double x1, double x2, double y1, double y2, double z1, double z2, std::vector < torus >& tori){
+	// countts++;
+	// std::cout << countts << " " << x1 << " " << x2 << " " << y1 << " " << y2 << " " << z1 << " " << z2  << "    " << vol << std::endl; 
+	bool a, c, d, e, res;
+	c = true;
+	d = true;
+	res = true;
+	for(int i = 0; i < tori.size() && res; i++){
+		c = cFunction(i, x1, x2, y1, y2, z1, z2, tori);
+		d = dFunction(i, x1, x2, y1, y2, z1, z2, tori);
+		res = (c || d);
+	}
+	if(res){
+		// vol -= std::abs((x1 - x2)*(y1 - y2)*(z1 - z2));
+		return;
+	}
+
+	res = false;
+	for(int i = 0; i < tori.size() && !res; i++){
+		a = aFunction(i, x1, x2, y1, y2, z1, z2, tori);
+		e = eFuntion(i, x1, x2, y1, y2, z1, z2, tori);
+		res = (a && e);
+	}
+	if(res){
+		vol += std::abs((x1 - x2)*(y1 - y2)*(z1 - z2));
+		return;
+	}
+
+	double lm = std::max(std::max(abs(x1 - x2), abs(y1 - y2)), std::abs(z1 - z2));
+
+	if(std::abs((x1 - x2)*(y1 - y2)*(z1 - z2)) <= 0.00001){
+		vol += std::abs((x1 - x2)*(y1 - y2)*(z1 - z2))/2.0;
+		return;
+	}
+
+	if(lm == abs(z1 - z2)){
+		bfsq.push(node(x1, x2, y1, y2, std::min(z1, z2), (z1 + z2)/2.0));
+		bfsq.push(node(x1, x2, y1, y2, (z1 + z2)/2.0, std::max(z1, z2)));
+	}
+	else{
+		if(lm == abs(x1 - x2)){
+			bfsq.push(node(std::min(x1, x2), (x1 + x2)/2.0, y1, y2, z1, z2));
+			bfsq.push(node((x1 + x2)/2.0, std::max(x1, x2), y1, y2, z1, z2));
+		}
+		else{
+			bfsq.push(node(x1, x2, std::min(y1, y2), (y1 + y2)/2.0, z1, z2));
+			bfsq.push(node(x1, x2, (y1 + y2)/2.0, std::max(y1, y2), z1, z2));
+		}
+	}
+	return;
+}
+
 
 int main(){
 	std::ios::sync_with_stdio(false);
 	std::cin.tie(NULL);
-
 	int n;
 	std::cin >> n;
 	std::vector < torus > tori(n);
 	for(int i = 0; i < n; i++){
 		std::cin >> tori[i].x >> tori[i].y >> tori[i].z >> tori[i].R >> tori[i].r;
 	}
-
-	std::sort(tori.begin(), tori.end(), compareBV);
-
-	vol = 0.0;
-	srand(time(0));
-	double prob = 0.0;
-	int div = 100000, trials = 1000;
-	for(int i = 0; i < n; i++)
-	{
-		double vZero = 2*pi*pi*tori[i].r*tori[i].r*tori[i].R;
-		if(i == 0){
-			vol += vZero;
-		}
-		else{
-			for(int j = 0; j < div; j++){
-				vol += (probCommon(i, (2*pi*j)/(div*1.0), (2*pi*(j + 1))/(div*1.0), trials, tori)*vZero)/(div*1.0);
-			}
-		}
+	bfsq.push(node(-1000.0, 700.0, -1000.0, 700.0, -1000.0, 700.0));
+	// bfsq.push(node(-100.0, 100.0, -100.0, 100.0, -100.0, 100.0));
+	// std::cout << std::fixed << std::setprecision(8) << 1.0 << "\n";
+	while(!bfsq.empty()){
+		rec(bfsq.front().x1, bfsq.front().x2, bfsq.front().y1, bfsq.front().y2, bfsq.front().z1, bfsq.front().z2, tori);
+		bfsq.pop();
 	}
 
-	std::cout << std::fixed << std::setprecision(10)<< vol << "\n";
+	std::cout << std::fixed << std::setprecision(10) << vol << std::endl;
 	return 0;
 }
