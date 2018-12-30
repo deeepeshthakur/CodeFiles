@@ -13,7 +13,7 @@
 using namespace std;
 const double pi=acos(-1.0);
 const double pii=2*pi;
-const double eps=1e-7;
+const double eps=1e-5;
 
 std::vector<double> xCoor,yCoor,zCoor,R1,R2;
 
