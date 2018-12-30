@@ -369,7 +369,7 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 				}
 				qz.push({s,e});
 			}
-		
+
 			{
 				double s=0.0,e;
 				while(!qz.empty()){
@@ -389,11 +389,11 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 bool truef(int i,int j,std::vector<double>& x,std::vector<double>& y,std::vector<double>& r1,std::vector<double>& r2){
 	if(
 		(x[i]<x[j]) || 
-	    (x[i]==x[j] && y[i]<y[j]) ||
-	    (x[i]==x[j] && y[i]==y[j] && r2[i]<r2[j]) ||
-	    (x[i]==x[j] && y[i]==y[j] && r2[i]==r2[j] && r1[i]>=r1[j])
-	  ){ return true;}
-	return false;
+		(x[i]==x[j] && y[i]<y[j]) ||
+		(x[i]==x[j] && y[i]==y[j] && r2[i]<r2[j]) ||
+		(x[i]==x[j] && y[i]==y[j] && r2[i]==r2[j] && r1[i]>=r1[j])
+		){ return true;}
+		return false;
 }
 
 void swapf(int i,int j,std::vector<double>& x,std::vector<double>& y,std::vector<double>& r1,std::vector<double>& r2){
@@ -486,6 +486,21 @@ double f100(int n){
 			zh.pb(zCoor[i]+R2[i]);
 		}
 		std::sort(full(zh));
+		{
+			std::vector<double> zhh{};
+			rep(i,0,zh.size()){
+				if(i&&zh[i-1]!=zh[i]){
+					double delta=(zh[i]-zh[i-1])/5.0;
+					rep(j,1,5){
+						zhh.pb(zh[i-1]+j*delta);
+					}
+				}
+			}
+			rep(i,0,zhh.size()){
+				zh.pb(zhh[i]);
+			}
+			std::sort(full(zh));
+		}
 		rep(i,0,zh.size()){
 			if(i){
 				iLims.pb({zh[i-1],zh[i]});
@@ -502,7 +517,8 @@ double f100(int n){
 	rep(i,0,iLims.size()){
 		double fl=f101(n,iLims[i].F),fr=f101(n,iLims[i].S);
 		ans+=f102(n,iLims[i].F,fl,iLims[i].S,fr,f103(n,iLims[i].F,fl,iLims[i].S,fr));
-		std::cout<<ans<<"                          "<<iLims[i].F<<"  "<<iLims[i].S<<std::endl;
+		if(ans>0.0)
+			std::cout<<ans<<"                          "<<iLims[i].F<<"  "<<iLims[i].S<<std::endl;
 		ans=0.0;
 	}
 	return ans;
