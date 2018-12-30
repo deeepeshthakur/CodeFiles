@@ -465,8 +465,6 @@ inline double f103(int& n,double& l,double& fl,double& r,double& fr){
 }
 
 double f102(int n,double l,double fl,double r,double fr,double simpf){
-	// /std::cout<<l<<"      "<<r<<std::endl;
-	// std::cout<<"-"<<std::flush;
 	double mid=(l+r)*0.5,fmid=f101(n,mid),simpfl=f103(n,l,fl,mid,fmid),simpfr=f103(n,mid,fmid,r,fr);
 	if(std::abs(simpf-simpfl-simpfr)<=eps*std::abs(simpf)){
 		return simpf;
@@ -516,9 +514,9 @@ double f100(int n){
 	rep(i,0,iLims.size()){
 		double fl=f101(n,iLims[i].F),fr=f101(n,iLims[i].S);
 		ans+=f102(n,iLims[i].F,fl,iLims[i].S,fr,f103(n,iLims[i].F,fl,iLims[i].S,fr));
-		if(ans>0.0)
-			std::cout<<ans<<"                          "<<iLims[i].F<<"  "<<iLims[i].S<<std::endl;
-		ans=0.0;
+		// if(ans>0.0)
+		// 	std::cout<<ans<<"                          "<<iLims[i].F<<"  "<<iLims[i].S<<std::endl;
+		// ans=0.0;
 	}
 	return ans;
 }
