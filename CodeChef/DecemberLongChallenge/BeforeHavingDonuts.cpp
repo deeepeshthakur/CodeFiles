@@ -555,18 +555,18 @@ int main(){
 		zh.push_back(inptori[i].z+inptori[i].r);
 	}
 	std::sort(zh.begin(),zh.end());
-	for(int i=0;i<zh.size();i++){
-		if(i&&zh[i-1]!=zh[i]){
-			double delta=(zh[i]-zh[i-1])/5;
-			for(int j=1;j<5;j++){
-				zhh.push_back(zh[i-1]+j*delta);
-			}
-		}
-	}
-	for(int i=0;i<zhh.size();i++){
-		zh.push_back(zhh[i]);
-	}
-	std::sort(zh.begin(),zh.end());
+	// for(int i=0;i<zh.size();i++){
+	// 	if(i&&zh[i-1]!=zh[i]){
+	// 		double delta=(zh[i]-zh[i-1])/5;
+	// 		for(int j=1;j<5;j++){
+	// 			zhh.push_back(zh[i-1]+j*delta);
+	// 		}
+	// 	}
+	// }
+	// for(int i=0;i<zhh.size();i++){
+	// 	zh.push_back(zhh[i]);
+	// }
+	// std::sort(zh.begin(),zh.end());
 
 	for(int i=1;i<zh.size();i++){
 		bfsq.push(node(-300,300,-300,300,zh[i-1],zh[i]));
