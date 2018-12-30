@@ -548,20 +548,34 @@ int main(){
 	}
 
 	// getInitialQ(inptori);
-	std::vector<double> zh{};
+	std::vector<double> zh{},zhh{};
 	for(int i=0;i<n;i++){
-		zh.push_back(inptori[i].z);
 		zh.push_back(inptori[i].z-inptori[i].r);
+		zh.push_back(inptori[i].z);
 		zh.push_back(inptori[i].z+inptori[i].r);
 	}
 	std::sort(zh.begin(),zh.end());
+	for(int i=0;i<zh.size();i++){
+		if(i&&zh[i-1]!=zh[i]){
+			double delta=zh[i]-zh[i-1]/5;
+			for(int j=1;j<5;j++){
+				zhh.push_back(zh[i-1]+j*delta);
+			}
+		}
+	}
+	for(int i=0;i<zhh.size();i++){
+		zh.push_back(zhh[i]);
+	}
+	std::sort(zh.begin(),zh.end());
+
 	for(int i=1;i<zh.size();i++){
 		bfsq.push(node(-300,300,-300,300,zh[i-1],zh[i]));
 		while(!bfsq.empty()){
 			rec(bfsq.front().x1, bfsq.front().x2, bfsq.front().y1, bfsq.front().y2, bfsq.front().z1, bfsq.front().z2, inptori);
 			bfsq.pop();
 		}
-		std::cout << std::fixed << std::setprecision(5) << vol + dv1 + dv2 - dv3 + dv4 << " " << vol<<" "<<dv1<<" "<<dv2<<" "<<dv3<<" "<<dv4 << std::endl;
+		if( vol + dv1 + dv2 - dv3 + dv4 > 0.0)
+		std::cout << std::fixed << std::setprecision(5) << vol + dv1 + dv2 - dv3 + dv4 << "             "<< zh[i-1]<<"  "<<zh[i]<< std::endl;
 		vol=0.0;
 		dv1=0.0;
 		dv2=0.0;
