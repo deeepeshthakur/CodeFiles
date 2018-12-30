@@ -494,15 +494,16 @@ double f100(int n){
 
 	}
 
-	rep(i,0,iLims.size()){
-		std::cout<<iLims[i].F<<" "<<iLims[i].S<<std::endl;
-	}
+	// rep(i,0,iLims.size()){
+	// 	std::cout<<iLims[i].F<<" "<<iLims[i].S<<std::endl;
+	// }
 
 	double ans=0.0;
 	rep(i,0,iLims.size()){
 		double fl=f101(n,iLims[i].F),fr=f101(n,iLims[i].S);
 		ans+=f102(n,iLims[i].F,fl,iLims[i].S,fr,f103(n,iLims[i].F,fl,iLims[i].S,fr));
-		// 	std::cout<<ans<<std::endl;
+		std::cout<<ans<<"                          "<<iLims[i].F<<"  "<<iLims[i].S<<std::endl;
+		ans=0.0;
 	}
 	return ans;
 }
