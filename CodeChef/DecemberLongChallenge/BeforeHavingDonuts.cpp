@@ -542,9 +542,9 @@ int main(){
 				f = false;
 			}
 		}
-		if(f){
-			vol += 2.0*pi*pi*inptori[i].r*inptori[i].r*inptori[i].R;
-		}
+		// if(f){
+		// 	vol += 2.0*pi*pi*inptori[i].r*inptori[i].r*inptori[i].R;
+		// }
 	}
 
 	getInitialQ(inptori);
