@@ -13,7 +13,7 @@
 using namespace std;
 const double pi=acos(-1.0);
 const double pii=2*pi;
-const double eps=1e-5;
+const double eps=1e-7;
 
 std::vector<double> xCoor,yCoor,zCoor,R1,R2;
 
@@ -462,12 +462,14 @@ double f101(int n,double zh){
 }
 
 inline double f103(int& n,double& l,double& fl,double& r,double& fr){
-	return (r-l)*(fl+fr+4*(f101(n,(l+r)*0.5)))/6.0;
+	return std::abs((r-l)*(fl+fr+4*(f101(n,(l+r)*0.5)))/6.0);
 }
 
 double f102(int n,double l,double fl,double r,double fr,double simpf){
+	// /std::cout<<l<<"      "<<r<<std::endl;
+	// std::cout<<"-"<<std::flush;
 	double mid=(l+r)*0.5,fmid=f101(n,mid),simpfl=f103(n,l,fl,mid,fmid),simpfr=f103(n,mid,fmid,r,fr);
-	if(std::abs(simpf-simpfl-simpfr)<eps){
+	if(std::abs(simpf-simpfl-simpfr)<=eps*std::abs(simpf)){
 		return simpf;
 	}
 	return f102(n,l,fl,mid,fmid,simpfl)+f102(n,mid,fmid,r,fr,simpfr);
@@ -476,31 +478,20 @@ double f102(int n,double l,double fl,double r,double fr,double simpf){
 double f100(int n){
 	std::vector<std::pair<double,double>> iLims{};
 	{
-		std::vector<std::pair<double,double>> zs(n);
+
+		std::vector<double> zh{};
 		rep(i,0,n){
-			zs[i].F=zCoor[i]-R2[i];
-			zs[i].S=zCoor[i]+R2[i];
+			zh.pb(zCoor[i]);
+			zh.pb(zCoor[i]-R2[i]);
+			zh.pb(zCoor[i]+R2[i]);
 		}
-		std::sort(full(zs));
-		rep(i,0,zs.size()){
-			std::cout<<zs[i].F<<" "<<zs[i].S<<"\n";
-		}
-		std::cout<<std::endl;
-		double s=zs[0].F,e;
-		rep(i,0,n){
-			if(i+1<n){
-				if(zs[i].S>=zs[i+1].F){
-					zs[i+1].F=std::min(zs[i].F,zs[i+1].F);
-					zs[i+1].S=std::max(zs[i].S,zs[i+1].S);
-				}
-				else{
-					iLims.pb({zs[i].F,zs[i].S});
-				}
-			}
-			else{
-				iLims.pb({zs[i].F,zs[i].S});
+		std::sort(full(zh));
+		rep(i,0,zh.size()){
+			if(i){
+				iLims.pb({zh[i-1],zh[i]});
 			}
 		}
+
 	}
 
 	rep(i,0,iLims.size()){
@@ -511,6 +502,7 @@ double f100(int n){
 	rep(i,0,iLims.size()){
 		double fl=f101(n,iLims[i].F),fr=f101(n,iLims[i].S);
 		ans+=f102(n,iLims[i].F,fl,iLims[i].S,fr,f103(n,iLims[i].F,fl,iLims[i].S,fr));
+		// 	std::cout<<ans<<std::endl;
 	}
 	return ans;
 }
