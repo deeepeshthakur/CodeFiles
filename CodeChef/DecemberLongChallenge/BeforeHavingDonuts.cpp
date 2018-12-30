@@ -2,7 +2,7 @@
 
 using namespace std;
 long long countts = 0;
-double vol = 0.0, epsi = 0.0, dv1 = 0.0, dv2 = 0.0, dv3 = 0.0, dv4 = 0.0, pi = 3.14159265359;
+double vol = 0.0, epsi = 1e-6, dv1 = 0.0, dv2 = 0.0, dv3 = 0.0, dv4 = 0.0, pi = 3.14159265359;
 
 struct torus{
 	double x, y, z, r, R;
@@ -547,11 +547,27 @@ int main(){
 		// }
 	}
 
-	getInitialQ(inptori);
-	while(!bfsq.empty()){
-		rec(bfsq.front().x1, bfsq.front().x2, bfsq.front().y1, bfsq.front().y2, bfsq.front().z1, bfsq.front().z2, inptori);
-		bfsq.pop();
+	// getInitialQ(inptori);
+	std::vector<double> zh{};
+	for(int i=0;i<n;i++){
+		zh.push_back(inptori[i].z);
+		zh.push_back(inptori[i].z-inptori[i].r);
+		zh.push_back(inptori[i].z+inptori[i].r);
 	}
-	std::cout << std::fixed << std::setprecision(5) << vol + dv1 + dv2 - dv3 + dv4 << " " << vol<<" "<<dv1<<" "<<dv2<<" "<<dv3<<" "<<dv4 << std::endl;
+	std::sort(zh.begin(),zh.end());
+	for(int i=1;i<zh.size();i++){
+		bfsq.push(node(-300,300,-300,300,zh[i-1],zh[i]));
+		while(!bfsq.empty()){
+			rec(bfsq.front().x1, bfsq.front().x2, bfsq.front().y1, bfsq.front().y2, bfsq.front().z1, bfsq.front().z2, inptori);
+			bfsq.pop();
+		}
+		std::cout << std::fixed << std::setprecision(5) << vol + dv1 + dv2 - dv3 + dv4 << " " << vol<<" "<<dv1<<" "<<dv2<<" "<<dv3<<" "<<dv4 << std::endl;
+		vol=0.0;
+		dv1=0.0;
+		dv2=0.0;
+		dv3=0.0;
+		dv4=0.0;
+	}
+
 	return 0;
 }
