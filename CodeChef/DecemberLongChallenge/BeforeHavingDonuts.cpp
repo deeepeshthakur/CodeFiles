@@ -21,13 +21,15 @@ inline double sq(double a){
 	return a*a;
 }
 
-inline void f307(std::vector<std::vector<double>>& t,double& a,double& b){
-	if(b>pii){
-		t.pb({a,pii});
-		t.pb({0.0,b-pii});
-	}
-	else{
+inline void f307(std::vector<std::vector<double>>& t,double a,double b){
+	a=((a>pii)?a-pii:a);
+	b=((b>pii)?b-pii:b);
+	if(a<b){
 		t.pb({a,b});
+	}
+	if(a>b){
+		t.pb({a,pii});
+		t.pb({0.0,b});
 	}
 }
 
@@ -57,7 +59,6 @@ inline bool f303(double x1,double y1,double x2,double y2,double r1,double r2){
 }
 
 inline double f302(double th1,double th2,double x,double y,double r){
-	// std::cout<<r2d(th1)<<" "<<r2d(th2)<<" "<<x<<" "<<y<<" "<<r<<std::endl;
 	return x*r*(std::sin(th2)-std::sin(th1))+sq(r)*((th2+std::sin(th2)*std::cos(th2))-(th1+std::sin(th1)*std::cos(th1)))*0.5;
 }
 
@@ -245,7 +246,7 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 						}
 						else{
 							while(!qm.empty()){
-								ans+=f302(qm.front().S,qm.front().F,x[i],y[i],r1[i]);
+								ans-=f302(qm.front().S,qm.front().F,x[i],y[i],r1[i]);
 								qm.pop();
 							}
 						}
@@ -268,11 +269,11 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 						}
 						else{
 							if(qz.front().F<=qm.front().S){
-								ans+=f302(qz.front().F,qm.front().F,x[i],y[i],r1[i]);
+								ans-=f302(qz.front().F,qm.front().F,x[i],y[i],r1[i]);
 								qm.front().F=qz.front().F;
 							}
 							else{
-								ans+=f302(qm.front().S,qm.front().F,x[i],y[i],r1[i]);
+								ans-=f302(qm.front().S,qm.front().F,x[i],y[i],r1[i]);
 								qm.pop();
 							}
 						}
@@ -280,7 +281,6 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 				}
 			}
 		}
-		// std::cout<<std::endl;
 		//inner circle
 		{
 			std::vector<std::vector<double>> z{};
@@ -382,7 +382,6 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 				ans-=f302(s,e,x[i],y[i],r2[i]);
 			}
 		}
-		// std::cout<<std::endl;
 	}
 }
 
@@ -486,21 +485,21 @@ double f100(int n){
 			zh.pb(zCoor[i]+R2[i]);
 		}
 		std::sort(full(zh));
-		{
-			std::vector<double> zhh{};
-			rep(i,0,zh.size()){
-				if(i&&zh[i-1]!=zh[i]){
-					double delta=(zh[i]-zh[i-1])/5.0;
-					rep(j,1,5){
-						zhh.pb(zh[i-1]+j*delta);
-					}
-				}
-			}
-			rep(i,0,zhh.size()){
-				zh.pb(zhh[i]);
-			}
-			std::sort(full(zh));
-		}
+		// {
+		// 	std::vector<double> zhh{};
+		// 	rep(i,0,zh.size()){
+		// 		if(i&&zh[i-1]!=zh[i]){
+		// 			double delta=(zh[i]-zh[i-1])/5.0;
+		// 			rep(j,1,5){
+		// 				zhh.pb(zh[i-1]+j*delta);
+		// 			}
+		// 		}
+		// 	}
+		// 	rep(i,0,zhh.size()){
+		// 		zh.pb(zhh[i]);
+		// 	}
+		// 	std::sort(full(zh));
+		// }
 		rep(i,0,zh.size()){
 			if(i){
 				iLims.pb({zh[i-1],zh[i]});
