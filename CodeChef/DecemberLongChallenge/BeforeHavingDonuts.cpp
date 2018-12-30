@@ -469,7 +469,7 @@ void rec(double x1, double x2, double y1, double y2, double z1, double z2, std::
 
 	double lm = std::max(std::max(x2 - x1, y2 - y1), z2 - z1);
 
-	if((lm < 0.1*tori[ti].r && t == 1)){
+	if((lm < 0.01*tori[ti].r && t == 1)){
 		if(aFunction(ti, x1, x2, y1, y2, z1, z2, tori)){
 			baseCase(ti, -1, x1, x2, y1, y2, z1, z2, tori);
 		}
@@ -479,7 +479,7 @@ void rec(double x1, double x2, double y1, double y2, double z1, double z2, std::
 		return;
 	}
 
-	if(lm < 0.01){
+	if(lm < 0.1){
 		dv4 += std::abs((x2 - x1)*(y2 -y1)*(z2 - z1))/2.0;
 		return;
 	}
@@ -552,6 +552,6 @@ int main(){
 		rec(bfsq.front().x1, bfsq.front().x2, bfsq.front().y1, bfsq.front().y2, bfsq.front().z1, bfsq.front().z2, inptori);
 		bfsq.pop();
 	}
-	std::cout << std::fixed << std::setprecision(5) << vol + dv1 + dv2 - dv3 + dv4 << std::endl;
+	std::cout << std::fixed << std::setprecision(5) << vol + dv1 + dv2 - dv3 + dv4 << " " << vol<<" "<<dv1<<" "<<dv2<<" "<<dv3<<" "<<dv4 << std::endl;
 	return 0;
 }
