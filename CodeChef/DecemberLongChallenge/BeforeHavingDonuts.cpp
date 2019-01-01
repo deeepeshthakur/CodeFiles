@@ -476,7 +476,6 @@ double f102(int n,double l,double fl,double r,double fr,double simpf){
 double f100(int n){
 	std::vector<std::pair<double,double>> iLims{};
 	{
-
 		std::vector<double> zh{};
 		rep(i,0,n){
 			zh.pb(zCoor[i]);
@@ -515,5 +514,6 @@ int main(){
 		std::cin>>xCoor[i]>>yCoor[i]>>zCoor[i]>>R1[i]>>R2[i];
 	}
 	std::cout<<std::fixed<<std::setprecision(5)<<f100(n)<<std::endl;
+
 	return 0;
 }
