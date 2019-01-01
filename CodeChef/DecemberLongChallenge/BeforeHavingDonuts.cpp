@@ -13,7 +13,7 @@
 using namespace std;
 const double pi=acos(-1.0);
 const double pii=2*pi;
-const double eps=1e-5;
+const double eps=1e-9;
 
 std::vector<double> xCoor,yCoor,zCoor,R1,R2;
 
@@ -55,7 +55,7 @@ inline bool f304(double x1,double y1,double x,double y,double r){
 }
 
 inline bool f303(double x1,double y1,double x2,double y2,double r1,double r2){
-	return (r1-r2>=std::sqrt(sq(x1-x2)+sq(y1-y2))) ? true:false;
+	return (r2-r1>=std::sqrt(sq(x1-x2)+sq(y1-y2))) ? true:false;
 }
 
 inline double f302(double th1,double th2,double x,double y,double r){
@@ -123,6 +123,7 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 							if(ans2[0]>ans2[1]){
 								ans2[1]+=pii;
 							}
+
 							f307(z,ans1[0],ans2[0]);
 							f307(z,ans2[1],ans1[1]);
 							f307(m,ans2[0],ans2[1]);						
@@ -151,7 +152,7 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 									std::vector<double> ans1{0.0,pii},ans2{};
 									lcf(x[i],y[i],r1[i],2*(x[j]-x[i]),2*(y[j]-y[i]),sq(r1[i])-sq(r2[j])+sq(x[j])-sq(x[i])+sq(y[j])-sq(y[i]),ans2);
 
-									if(!f304(x[i]+r1[i]*std::cos((ans2[0]+ans2[1])*0.5),y[i]+r1[i]*std::sin((ans2[0]+ans2[1])*0.5),x[j],y[j],r2[j])){
+									if(f304(x[i]+r1[i]*std::cos((ans2[0]+ans2[1])*0.5),y[i]+r1[i]*std::sin((ans2[0]+ans2[1])*0.5),x[j],y[j],r2[j])){
 										std::swap(ans2[0],ans2[1]);
 									}
 
@@ -195,7 +196,6 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 			std::sort(full(z));
 			std::sort(full(m));
 			std::sort(full(p));
-
 			std::queue<std::pair<double,double>> qm{},qz{},qp{};
 			{
 				for(int i=0;i<z.size();i++){
@@ -328,11 +328,11 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 					else{
 						if(f303(x[i],y[i],x[j],y[j],r2[i],r1[j])){
 							if(!f303(x[i],y[i],x[j],y[j],r2[i],r2[j])){
-								if(f305(x[i],y[i],x[j],y[j],r1[i],r2[j])){
+								if(f305(x[i],y[i],x[j],y[j],r2[i],r2[j])){
 									std::vector<double> ans2{};
 									lcf(x[i],y[i],r2[i],2*(x[j]-x[i]),2*(y[j]-y[i]),sq(r2[i])-sq(r2[j])+sq(x[j])-sq(x[i])+sq(y[j])-sq(y[i]),ans2);
 
-									if(!f304(x[i]+r2[i]*std::cos((ans2[0]+ans2[1])*0.5),y[i]+r2[i]*std::sin((ans2[0]+ans2[1])*0.5),x[j],y[j],r2[j])){
+									if(f304(x[i]+r2[i]*std::cos((ans2[0]+ans2[1])*0.5),y[i]+r2[i]*std::sin((ans2[0]+ans2[1])*0.5),x[j],y[j],r2[j])){
 										std::swap(ans2[0],ans2[1]);
 									}
 
@@ -383,6 +383,7 @@ double f301(int n,std::vector<double>& x,std::vector<double>& y,std::vector<doub
 			}
 		}
 	}
+	return ans;
 }
 
 bool truef(int i,int j,std::vector<double>& x,std::vector<double>& y,std::vector<double>& r1,std::vector<double>& r2){
@@ -466,7 +467,7 @@ inline double f103(int& n,double& l,double& fl,double& r,double& fr){
 
 double f102(int n,double l,double fl,double r,double fr,double simpf){
 	double mid=(l+r)*0.5,fmid=f101(n,mid),simpfl=f103(n,l,fl,mid,fmid),simpfr=f103(n,mid,fmid,r,fr);
-	if(std::abs(simpf-simpfl-simpfr)<=eps*std::abs(simpf)){
+	if(std::abs(l-r)<0.3&&std::abs(simpf-simpfl-simpfr)<=eps){
 		return simpf;
 	}
 	return f102(n,l,fl,mid,fmid,simpfl)+f102(n,mid,fmid,r,fr,simpfr);
@@ -483,21 +484,6 @@ double f100(int n){
 			zh.pb(zCoor[i]+R2[i]);
 		}
 		std::sort(full(zh));
-		// {
-		// 	std::vector<double> zhh{};
-		// 	rep(i,0,zh.size()){
-		// 		if(i&&zh[i-1]!=zh[i]){
-		// 			double delta=(zh[i]-zh[i-1])/5.0;
-		// 			rep(j,1,5){
-		// 				zhh.pb(zh[i-1]+j*delta);
-		// 			}
-		// 		}
-		// 	}
-		// 	rep(i,0,zhh.size()){
-		// 		zh.pb(zhh[i]);
-		// 	}
-		// 	std::sort(full(zh));
-		// }
 		rep(i,0,zh.size()){
 			if(i){
 				iLims.pb({zh[i-1],zh[i]});
@@ -506,17 +492,10 @@ double f100(int n){
 
 	}
 
-	// rep(i,0,iLims.size()){
-	// 	std::cout<<iLims[i].F<<" "<<iLims[i].S<<std::endl;
-	// }
-
 	double ans=0.0;
 	rep(i,0,iLims.size()){
 		double fl=f101(n,iLims[i].F),fr=f101(n,iLims[i].S);
 		ans+=f102(n,iLims[i].F,fl,iLims[i].S,fr,f103(n,iLims[i].F,fl,iLims[i].S,fr));
-		// if(ans>0.0)
-		// 	std::cout<<ans<<"                          "<<iLims[i].F<<"  "<<iLims[i].S<<std::endl;
-		// ans=0.0;
 	}
 	return ans;
 }
