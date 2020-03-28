@@ -1,37 +1,38 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#define iint int
+#define pll std::pair<iint,iint>
+#define rep(i,a,b) for(iint i=(iint)a;i<(iint)b;i++)
+#define per(i,a,b) for(iint i=(iint)a;i>(iint)b;i--)
+#define F first
+#define S second
+#define pb push_back
+#define mp make_pair
+#define full(a) a.begin(),a.end()
+#define rfull(a) a.rbegin(),a.rend()
 
 using namespace std;
+const double pi=acos(-1.0);
+const double pii=2*pi;
+const double eps=1e-6;
+const long long MOD=1e9+7;
+
+void solve(){
+	long long a,b,c,d;
+	std::cin >> a >> b >> c >> d;
+	
+}
 
 int main(){
-	int a, b, c, d;
-	std::cin >> a >> b >> c >> d;
-	std::vector < long long > abArray( 4096, 0), cdArray( 4096, 0);
-	int xorAns = 0;
-	for(int x = 1; x <= a; x++){
-		for(int y = 1; y <= b; y++){
-			xorAns = x^y;
-			abArray[xorAns]++;
-		}
-	}
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(NULL);
+	std::cout.tie(NULL);
 
-	for(int x = 1; x <= c; x++){
-		for(int y = 1; y <= d; y++){
-			xorAns = x^y;
-			cdArray[xorAns]++;
-		}
-	}
+	// int t;
+	// std::cin >> t;
+	// while(t--){
+	// 	solve();
+	// }
 
-	long long zeroXor = 0;
-	for(int index = 0; index < 4096; index++){
-		zeroXor += abArray[index]*cdArray[index];
-	}
-
-	long long ans = a;
-	ans *= (long long)b;
-	ans *= (long long)c;
-	ans *= (long long)d;
-
-	ans -= zeroXor;
-	std::cout << ans << "\n";
+	solve();
 	return 0;
 }
