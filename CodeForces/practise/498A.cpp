@@ -13,25 +13,14 @@ const double eps=1e-6;
 const long long MOD=1e9+7;
 
 void solve(){
-    int n,m;cin>>n>>m;
-    vector<vector<bool>> grid(n,vector<bool>(n,false));
-    vector<vector<int>> adj(n);
-    for(int i=0;i<m;i++){
-        int x,y;
-        cin>>x>>y;
-        grid[x-1][y-1]=true;
-        adj[x-1].pb(y-1);
-    }
-
+    long long x1,y1,x2,y2;cin>>x1>>y1>>x2>>y2;
+    set<tuple<int,int,int>> st;
+    int n;cin>>n;
     long long ans=0;
     for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
-            long long tmp=0;
-            for(int k=0;k<adj[i].size();k++){
-                if(i!=j && adj[i][k]!=i && adj[i][k]!=j && grid[adj[i][k]][j]) tmp++;
-            }
-            ans+=(tmp*(tmp-1))/2;
-        }
+        long long a,b,c;cin>>a>>b>>c;
+        if(((a*x1+b*y1+c)<0 &&(a*x2+b*y2+c)>0)||((a*x1+b*y1+c)>0 &&(a*x2+b*y2+c)<0)) ans++;
+
     }
     cout<<ans<<"\n";
 }

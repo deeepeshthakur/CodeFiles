@@ -14,26 +14,14 @@ const long long MOD=1e9+7;
 
 void solve(){
     int n,m;cin>>n>>m;
-    vector<vector<bool>> grid(n,vector<bool>(n,false));
-    vector<vector<int>> adj(n);
+    int len=n;
     for(int i=0;i<m;i++){
         int x,y;
         cin>>x>>y;
-        grid[x-1][y-1]=true;
-        adj[x-1].pb(y-1);
+        if(y-x+1<len) len=y-x+1;
     }
-
-    long long ans=0;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
-            long long tmp=0;
-            for(int k=0;k<adj[i].size();k++){
-                if(i!=j && adj[i][k]!=i && adj[i][k]!=j && grid[adj[i][k]][j]) tmp++;
-            }
-            ans+=(tmp*(tmp-1))/2;
-        }
-    }
-    cout<<ans<<"\n";
+    cout<<len<<"\n";
+    for(int i=0;i<n;i++) cout<<(i%len)<<" "; cout<<"\n";
 }
 
 int main(){

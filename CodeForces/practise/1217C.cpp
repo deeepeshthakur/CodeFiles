@@ -13,24 +13,27 @@ const double eps=1e-6;
 const long long MOD=1e9+7;
 
 void solve(){
-    int n,m;cin>>n>>m;
-    vector<vector<bool>> grid(n,vector<bool>(n,false));
-    vector<vector<int>> adj(n);
-    for(int i=0;i<m;i++){
-        int x,y;
-        cin>>x>>y;
-        grid[x-1][y-1]=true;
-        adj[x-1].pb(y-1);
+    string s;
+    cin>>s;
+    vector<int> a(s.size(),0);
+    for(int i=0;i<a.size();i++) a[i]=(s[i]=='1'?1:0);
+    int n=a.size();
+    vector<int> dp(n,0);
+    for(int i=0;i<n;i++){
+        if(i>0){
+            if(a[i-1]==1) dp[i]=0;
+            else dp[i]=dp[i-1]+1;
+        }
     }
 
     long long ans=0;
     for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
-            long long tmp=0;
-            for(int k=0;k<adj[i].size();k++){
-                if(i!=j && adj[i][k]!=i && adj[i][k]!=j && grid[adj[i][k]][j]) tmp++;
+        if(a[i]==1){
+            int curr=0;
+            for(int j=1;j<20 && i+j-1<n;j++){
+                curr=curr*2+a[i+j-1];
+                if(j+dp[i]>=curr) ans++;
             }
-            ans+=(tmp*(tmp-1))/2;
         }
     }
     cout<<ans<<"\n";
@@ -41,6 +44,10 @@ int main(){
     std::cin.tie(NULL);
     std::cout.tie(NULL);
 
-    solve();
+    int t;
+    cin >> t;
+    while(t--){
+        solve();
+    }
     return 0;
 }

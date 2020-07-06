@@ -5,12 +5,11 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CPP11",
-            "command": "g++",
+            "label": "C/C++: g++ build active file",
+            "command": "/usr/bin/g++",
             "args": [
                 "-g",
                 "${file}",
-                "-std=c++11",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
@@ -20,7 +19,10 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "group": "build"
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
